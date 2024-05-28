@@ -271,6 +271,3 @@ def update_streamer(url : str, current_activity : str) -> None:
     )
     db.commit()
     logger.info("Streamer information updated within database")
-
-x = fetch_streamer(['https://www.youtube.com/watch?v=JYd7PEzlepA', 'not_live', 'mana'])
-print(x)
