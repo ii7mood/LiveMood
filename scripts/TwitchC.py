@@ -22,7 +22,7 @@ def oAuthreinit() -> None:
 
 
 def getProfile(name) -> dict:
-    oAuth = config['listeners']["twitch_opts"]
+    oAuth = config["twitch_opts"]
 
     headers = {
         'Client-ID': oAuth['client_id'],
@@ -33,14 +33,14 @@ def getProfile(name) -> dict:
 
     if profile_json.status_code == 401: # Twitch tokens expire after some time, in which case we can re-generate one.
         oAuthreinit()
-        getProfile(name)
+        return getProfile(name)
 
     profile = profile_json.json();
     return profile
 
 
 def getStream(name) -> dict:
-    oAuth = config['listeners']["twitch_opts"]
+    oAuth = config["twitch_opts"]
 
     headers = {
         'Client-ID': oAuth['client_id'],
@@ -50,7 +50,7 @@ def getStream(name) -> dict:
 
     if stream_json.status_code == 401: # Twitch tokens expire after some time, in which case we can re-generate one.
         oAuthreinit()
-        getStream(name)
+        return getStream(name)
 
     stream = stream_json.json();
     return stream 

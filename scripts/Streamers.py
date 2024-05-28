@@ -39,7 +39,7 @@ def _fetch_twitch_information(streamer_url : str, stream_info = False) -> str:
     This is optional, and only happens if stream_info is set to True which _fetch_avatar does not set.
     Should NOT be used by itself, instead should be called by _fetch_avatar
     '''
-    if config["TWITCH"]['scrape'] == "1":
+    if config["twitch_opts"]['scrape'] == "1":
         if stream_info == True: # If stream_info was requested while Twitch API is disabled then simply return none as we have no way to get API-only data.
             return None
 
