@@ -1,33 +1,32 @@
 import requests
-from common import logger, config
+from sys import exit as SysExit
+from common import logger, config, parent_path
+import json
 
 
-# FUNCTION BELOW IS NEEDED FOR INIT BUT I WILL RE-WRITE IT LATER
 def oAuthreinit() -> None:
-    return None
-#     config.read(config_path)
-#     OAuth = config['TWITCH']
-#     newAuthBearer = requests.post(f"https://id.twitch.tv/oauth2/token?client_id={OAuth['client_id']}&client_secret={OAuth['client_secret']}&grant_type=client_credentials").json();
+    logger.warning("Twitch Acess Token failed to authenticate. Requesting a new token..")
 
-#     try:
-#         OAuth['access_token'] = newAuthBearer['access_token']
-#     except KeyError:
-#         if newAuthBearer['status'] == 400:
-#             print("Twitch oauth details incorrectly entered.")
-#             exit(1)
+    oAuth = config["twitch_opts"]
+    newAuthBearer = requests.post(f"https://id.twitch.tv/oauth2/token?client_id={oAuth['client_id']}&client_secret={oAuth['client_secret']}&grant_type=client_credentials").json();
 
-    
-#     with open(config_path, 'w') as configfile:
-#         config.write(configfile)
+    try:
+        oAuth['access_token'] = newAuthBearer['access_token']
+    except KeyError:
+        if newAuthBearer['status'] == 400:
+            print("Twitch oAuth details incorrectly entered.")
+            SysExit(1)
 
+    with open(parent_path+'/files/config.json', 'w') as configfile:
+        json.dump(config, configfile, indent=2)
 
 
-def getProfile(name):
-    OAuth = config['listeners']["twitch_opts"]
+def getProfile(name) -> dict:
+    oAuth = config['listeners']["twitch_opts"]
 
     headers = {
-        'Client-ID': OAuth['client_id'],
-        'Authorization': 'Bearer ' + OAuth['access_token']}
+        'Client-ID': oAuth['client_id'],
+        'Authorization': 'Bearer ' + oAuth['access_token']}
 
 
     profile_json = requests.get(f'https://api.twitch.tv/helix/users?login={name}', headers=headers)
@@ -40,12 +39,12 @@ def getProfile(name):
     return profile
 
 
-def getStream(name):
-    OAuth = config['listeners']["twitch_opts"]
+def getStream(name) -> dict:
+    oAuth = config['listeners']["twitch_opts"]
 
     headers = {
-        'Client-ID': OAuth['client_id'],
-        'Authorization': 'Bearer ' + OAuth['access_token']}
+        'Client-ID': oAuth['client_id'],
+        'Authorization': 'Bearer ' + oAuth['access_token']}
 
     stream_json = requests.get(f'https://api.twitch.tv/helix/streams?user_login={name}', headers=headers)
 
