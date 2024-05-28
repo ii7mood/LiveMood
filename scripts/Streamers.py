@@ -170,6 +170,9 @@ def fetch_streamer(raw_streamer_data: list) -> dict:
         'no_warnings' : True
     }
 
+    if config['path_to_cookies']:
+        yt_dlp_args['cookies'] = config['path_to_cookies']
+
     # Use yt-dlp to extract video information from URL
     with yt_dlp.YoutubeDL(yt_dlp_args) as ytd:
         try:
