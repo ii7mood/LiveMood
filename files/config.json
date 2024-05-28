@@ -1,0 +1,40 @@
+{
+  "python_executable": "python",
+
+  "twitch_opts": {
+    "scrape": 0,
+    "client_id": "",
+    "client_secret": "",
+    "access_token": ""
+  },
+
+  "listeners": {
+
+    "discord": {
+      "enable": 1,
+      "host": "127.0.0.1",
+      "port": 9989,
+      "token": "",
+      "channel_id": "",
+      "module_path": "discord/main.py"
+    },
+
+    "pushover": {
+      "enable": 0,
+      "host": "127.0.0.1",
+      "port": 9988,
+      "token": "",
+      "user": "",
+      "module_path": "pushover/main.py"
+    },
+
+    "desktop": {
+      "enable": 1,
+      "external": 0, 
+      "host": "127.0.0.1",
+      "port": 9990,
+      "module_path": "desktop/main.py"
+    }
+
+  }
+}
