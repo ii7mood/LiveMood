@@ -5,6 +5,7 @@ from os import getcwd
 from datetime import datetime
 from functools import partial
 
+
 def signal_handler(signum, frame, sockets):
     for identity, sock in sockets.items():
         sock.close()
@@ -21,15 +22,11 @@ def register_signal_handler(sock, identity):
 sockets = {}
 count = 0
 
-# Create a partial function with the sockets dictionary as a default argument
-handler_with_args = partial(signal_handler, sockets=sockets)
 
-# Register the signal handler with the partial function
+handler_with_args = partial(signal_handler, sockets=sockets)
 signal.signal(signal.SIGTERM, handler_with_args)
 
 
-
-# Initialize config and logger
 def initialize_logger_and_config():
     global logger, config
     
@@ -48,6 +45,7 @@ def initialize_logger_and_config():
 
 logger = None
 config = None
+parent_path = getcwd().replace('/scripts', '')
 cwd = getcwd()
 
 initialize_logger_and_config()

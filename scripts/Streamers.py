@@ -2,14 +2,13 @@ import yt_dlp
 import requests
 import sqlite3
 import TwitchC
-from os import path, getcwd
+from os import path
 from sys import path as Path
 from time import sleep
 from bs4 import BeautifulSoup
 from datetime import datetime
-from common import logger, config
+from common import logger, config, parent_path
 
-parent_path = getcwd().replace('/scripts', '')
 Path.append(parent_path)
 logger.name = __file__
 
