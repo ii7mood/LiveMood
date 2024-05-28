@@ -100,7 +100,7 @@ def _fetch_twitch_information(streamer_url : str, stream_info = False) -> str:
                 return default_twitch_icon_url
 
 
-def _fetch_avatar(streamer_name, streamer_url : str, yt_dlp_args : dict) -> str:
+def _fetch_avatar(streamer_name : str, streamer_url : str, yt_dlp_args : dict) -> str:
     '''
     As the name suggests this will attempt to cache the avatar of each streamer.
     This is supposed to be called by fetch_streamer which should pass the yt_dlp arguments variable.
