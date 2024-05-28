@@ -225,8 +225,11 @@ def fetch_streamer(raw_streamer_data: list) -> dict:
                 data['category_name'] = twitch_ext[1]
         
         else: # Stream does not exist so just populate this with bare minimum data to save to DB.
+            data = {}
+            data['uploader_name'] = name
             data['live_status'] = 'not_live'
             data['uploader_url'] = url.replace('/live', '')
+            return data
         
     # Hand-pick needed metadata, ignore the rest
     data['live_status'] = info_dict['live_status']
@@ -268,3 +271,6 @@ def update_streamer(url : str, current_activity : str) -> None:
     )
     db.commit()
     logger.info("Streamer information updated within database")
+
+x = fetch_streamer(['https://www.youtube.com/watch?v=JYd7PEzlepA', 'not_live', 'mana'])
+print(x)
