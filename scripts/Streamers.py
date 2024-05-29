@@ -27,8 +27,8 @@ if path.getsize('files/Streamers.db') == 0: # assume file was just created then 
     )''')
     db.commit()
 
-default_twitch_icon_path = "files/.cache/twitch_icon"
-default_youtube_icon_path = "files/.cache/youtube_icon"
+default_twitch_icon_path = "files/cache/twitch_icon"
+default_youtube_icon_path = "files/cache/youtube_icon"
 default_twitch_icon_url = "https://imgur.com/1LHl1Rb"
 default_youtube_icon_url = "https://imgur.com/a/yzm4t9E"
 
