@@ -108,7 +108,7 @@ def _fetch_avatar(streamer_name : str, streamer_url : str, yt_dlp_args : dict) -
     returns url [0] and path [1] to streamer avatar.
     '''
 
-    cachepath = f'files/.cache/{streamer_name.replace('/', '')}'
+    cachepath = f'files/cache/{streamer_name.replace('/', '')}'
     url = None
 
     if "youtube" in streamer_url:
