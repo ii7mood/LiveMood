@@ -72,7 +72,8 @@ while True:
 1 - Follow Streamer
 2 - Remove Streamer
 3 - List all Streamers
-4 - Search with certain criteria\n""")
+4 - Search with certain criteria
+5 - Exit\n""")
     
     opt = input("Select an option: ")
     match opt:
@@ -84,5 +85,7 @@ while True:
             list_streamers()
         case "4":
             search()
+        case "5":
+            exit(0)
         case _:
-            print("Please select an option by inputing a number between 1 and 4!\n")
+            print("Please select an option by inputing a number between 1 and 5!\n")
