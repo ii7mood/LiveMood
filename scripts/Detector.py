@@ -79,13 +79,13 @@ def process_data(streamers_data : list, servers : dict) -> bool:
             #  if an error occured with *any* listener then the table will not update the streamers' status, will attempt re-send next iteration.
             continue
         
-        # update_streamer(info_dict['uploader_url'], info_dict['live_status'])
+        update_streamer(info_dict['uploader_url'], info_dict['live_status'])
 
 def main():
     while True:
         streamers_data = get_all_streamers_data()
         process_data(streamers_data, servers)
         logger.info("Sleeping for 5 minutes")
-        sleep(10)
+        sleep(300)
 
 main()
