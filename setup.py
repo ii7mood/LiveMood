@@ -1,7 +1,6 @@
 import venv
 import json
 from subprocess import run
-from sys import executable
 
 packages = [
 'beautifulsoup4==4.12.3',
@@ -87,7 +86,8 @@ def setup_discord():
 print("Creating a virtual environment..")
 venv.create('venv')
 print("Installing necessary packages via pip..")
-exitcode = run([executable, '-m', 'pip', 'install'] + packages, capture_output=True, text=True)
+for package in packages:
+  run(['venv/bin/pip', 'install', package])
 
 if exitcode:
     print("Something went wrong. Exiting.")
@@ -111,7 +111,7 @@ setup_twitch()
 with open('files/config.json', 'w') as configfile:
     json.dump(config, configfile, indent=2)
 
-
+input("You can now delete the setup.py file. Press any key to exit..")
 
 
 
