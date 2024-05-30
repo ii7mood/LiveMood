@@ -22,9 +22,9 @@
 
     "desktop": {
       "enable": 0,
-      "external": 0, 
       "host": "127.0.0.1",
       "port": 9990,
+      "external": 0, 
       "module_path": "desktop/main.py"
     }
 
