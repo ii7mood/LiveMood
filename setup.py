@@ -1,6 +1,7 @@
 import venv
 import json
 from subprocess import run
+import json
 
 packages = [
 'beautifulsoup4==4.12.3',
@@ -11,40 +12,9 @@ packages = [
 'dbus-python==1.3.2'
 ]
 
-config = {
-  "python_executable": "python",
-  "path_to_cookies": "",
-
-  "twitch_opts": {
-    "scrape": 1,
-    "client_id": "",
-    "client_secret": "",
-    "access_token": ""
-  },
-
-  "listeners": {
-
-    "discord": {
-      "enable": 0,
-      "host": "127.0.0.1",
-      "port": 9989,
-      "token": "",
-      "channel_id": "",
-      "module_path": "discord/main.py"
-    },
-
-    "desktop": {
-      "enable": 0,
-      "external": 0, 
-      "host": "127.0.0.1",
-      "port": 9990,
-      "module_path": "desktop/main.py"
-    }
-
-  }
-}
-
-
+config = dict()
+with open(f'files/config.json', 'r') as configfile:
+    config = json.load(configfile)
 
 def setup_twitch():
     scrape = input("Would you prefer retreiving data through the Twitch API (need to acquire keys from developer portal, recommended)? Y/N: ")
