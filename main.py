@@ -22,7 +22,7 @@ def signal_handler(sig, frame):
     logger.warning(f"Recieved {sig} signal. Stopping Gracefully..")
     for process in processes:
         process.terminate()
-    sleep(2)  # give time for other scripts to do their thing before exiting (causes race condition) 
+    sleep(2)  # give time for other scripts to do their thing before exiting (avoids race condition) 
     SysExit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
