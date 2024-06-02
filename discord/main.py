@@ -49,7 +49,7 @@ def embed_notification(info_dict : dict) -> discord.Embed:
         embed_notif.set_author(name=name, icon_url=avatar_url)
         embed_notif.set_image(url=thumbnail)
         embed_notif.add_field(name=fieldname, value=fieldvalue)
-        embed_notif.timestamp = datetime.datetime.now(datetime.UTC)
+        embed_notif.timestamp = datetime.datetime.now()
     
     else: # If scheduled notification
         
@@ -64,13 +64,13 @@ def embed_notification(info_dict : dict) -> discord.Embed:
             fieldname = f"**__Stream is starting shortly!__**"
         
         else:
-            fieldname = f"**__Starting in {round(((info_dict['release_timestamp'] - datetime.timestamp(datetime.datetime.now(datetime.UTC))) / 3600), 1)} hours!__**"
+            fieldname = f"**__Starting in {round(((info_dict['release_timestamp'] - datetime.timestamp(datetime.datetime.now()) / 3600), 1))} hours!__**"
 
         embed_notif = discord.Embed(title=f'{name} has scheduled a stream!', color=0xff0000, url=stream_url)
         embed_notif.set_author(name=name, icon_url=avatar_url)
         embed_notif.set_image(url=thumbnail_url)
         embed_notif.add_field(name=fieldname, value=fieldvalue)
-        embed_notif.timestamp = datetime.datetime.now(datetime.UTC)
+        embed_notif.timestamp = datetime.datetime.now()
 
     return embed_notif
 
