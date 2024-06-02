@@ -233,7 +233,6 @@ def updateStreamerActivity(url: str, activity: str) -> None:
     """
     Update the recorded_activity field of a streamer, using their URL as the identifier.
     """
-    logger.info(f"{url} : {activity}")
     cursor.execute("UPDATE streamers SET RECORDED_ACTIVITY = ? WHERE URL = ?", (activity, url))
     db.commit()
 
