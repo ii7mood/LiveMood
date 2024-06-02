@@ -36,7 +36,6 @@ def embed_notification(info_dict : dict) -> discord.Embed:
         name = info_dict['uploader']
         stream_url = info_dict['stream_url']
         avatar_url = info_dict['avatar_url']
-        logger.info(avatar_url)
         thumbnail = info_dict['thumbnail']
         fieldvalue = f"{info_dict['fulltitle']}"
 
