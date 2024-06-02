@@ -1,6 +1,6 @@
 import socket
 import pickle
-from Streamers import *
+from streamers import *
 from time import sleep
 from common import logger, config, register_signal_handler
 
@@ -33,8 +33,6 @@ for identity, listener in listeners.items():
     if server: #  In case we get a None return
         servers[identity] = server
 
-logger.info(servers.keys())
-
 def broadcast_data(data : dict, servers: dict) -> bool:
     successful = True
     for server in servers.items():
@@ -62,29 +60,32 @@ def broadcast_data(data : dict, servers: dict) -> bool:
     return successful
         
 
-def process_data(streamers_data : list, servers : dict) -> bool:
-    for streamer_data in streamers_data:
-        change_in_activity = streamer_data["live_status"] != streamer_data["recorded_live_status"]
+def processData(streamersData : list, servers : dict) -> bool:
+    for streamerData in streamersData:
+        change_in_activity = streamerData["live_status"] != streamerData["recorded_live_status"]
 
-        if change_in_activity:
-            logger.info(f'Change in activity with {streamer_data["name"]} | ' 
-                        f'Before: {streamer_data["recorded_live_status"]} | '
-                        f'After: {streamer_data["live_status"]} | ')
-            sleep(1) # Sometimes Detector.py sends data before listener can process it. So wait a sec.
-
-        if streamer_data["live_status"] == "not_live":
+        if not change_in_activity:
             continue
 
-        if not broadcast_data(streamer_data, servers): 
+        logger.info(f'Change in activity with {streamerData["uploader_name"]} | ' 
+                    f'Before: {streamerData["recorded_live_status"]} | '
+                    f'After: {streamerData["live_status"]} | ')
+        sleep(1) # Sometimes Detector.py sends data before listener can process it. So wait a sec.
+
+        if streamerData["live_status"] == "not_live":
+            updateStreamerActivity(streamerData['uploader_url'], streamerData['live_status'])
+            continue
+
+        if not broadcast_data(streamerData, servers): 
             #  if an error occured with *any* listener then the table will not update the streamers' status, will attempt re-send next iteration.
             continue
         
-        update_streamer(streamer_data['uploader_url'], streamer_data['live_status'])
+        updateStreamerActivity(streamerData['uploader_url'], streamerData['live_status'])
 
 def main():
     while True:
-        streamers_data = get_all_streamers_data()
-        process_data(streamers_data, servers)
+        streamersData = getStreamersData()
+        processData(streamersData, servers)
         logger.info("Sleeping for 5 minutes")
         sleep(300)
 
