@@ -40,10 +40,10 @@ def embed_notification(info_dict : dict) -> discord.Embed:
         fieldvalue = f"{info_dict['fulltitle']}"
 
         if info_dict['platform'] == 'youtube':
-            fieldname = f"Streaming on __YouTube__ with **{info_dict['concurrent_view_count']}** viewers!"
+            fieldname = f"Streaming on __YouTube__ with **{info_dict['viewer_count']}** viewers!"
         
         else:
-            fieldname = f'Playing **__{info_dict["category_name"]}__** with **{info_dict["concurrent_view_count"]}** viewers!'
+            fieldname = f'Playing **__{info_dict["category_name"]}__** with **{info_dict["viewer_count"]}** viewers!'
 
         embed_notif = discord.Embed(title=f'{name} has started a stream!', color=0x00ff00, url=stream_url)
         embed_notif.set_author(name=name, icon_url=avatar_url)
