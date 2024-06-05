@@ -110,4 +110,4 @@ while True:
         case "7":
             SysExit(0)
         case _:
-            print("Please select an option by inputing a number between 1 and 5!\n")
+            print("Please select an option by inputing a number between 1 and 7!\n")
