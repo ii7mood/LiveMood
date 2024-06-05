@@ -1,10 +1,10 @@
 import socket
 import pickle
-from os import getcwd
+import os
 from sys import path
 from plyer import notification
 
-parent_path = getcwd().replace('/desktop', '')
+parent_path = os.getcwd().replace('/desktop', '')
 path.append(parent_path)
 
 from scripts.common import logger, config, register_signal_handler
@@ -65,11 +65,10 @@ try:
             continue
 
         if info_dict['live_status'] == "is_live":
-            
             notification.notify(
                 title = "liveMood - LIVE",
                 message = f"{info_dict['uploader']} is now live!",
-                app_icon = f'{parent_path}/{info_dict["avatar_path"]}',
+                app_icon = os.path.join(parent_path, info_dict['avatar_path']),
                 timeout = 5 #  seconds
             )
 

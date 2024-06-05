@@ -1,10 +1,18 @@
 import subprocess
 import signal
+from os import name as os_name
 from time import sleep
 from scripts.common import logger, config
 from sys import exit as SysExit
 
 logger.name = __file__
+if os_name == "nt":
+    VENV_PYTHON_PATH = "venv\\Scripts\\python.exe"
+elif os_name == "posix":
+    VENV_PYTHON_PATH = "venv/bin/python"
+else:
+    VENV_PYTHON_PATH = "venv/bin/python"
+    logger.warning("OS is neither Unix-like nor Windows. Defaulting to Unix-like behavior.")
 
 processes = []
 for identity, listener in config["listeners"].items():
@@ -12,17 +20,17 @@ for identity, listener in config["listeners"].items():
         continue
 
     logger.info(f"Running {identity} module")
-    processes.append(subprocess.Popen([config["python_executable"], listener["module_path"]]))
+    processes.append(subprocess.Popen([VENV_PYTHON_PATH, listener["module_path"]]))
     sleep(3)
 
-processes.append(subprocess.Popen([config["python_executable"], "scripts/Detector.py"]))
+processes.append(subprocess.Popen([VENV_PYTHON_PATH, "scripts/Detector.py"]))
 
 
 def signal_handler(sig, frame):
     logger.warning(f"Recieved {sig} signal. Stopping Gracefully..")
     for process in processes:
         process.terminate()
-    sleep(2)  # give time for other scripts to do their thing before exiting (avoids race condition) 
+    sleep(2)  # give time for other scripts to do their thing before exiting (avoids race condition.. i think) 
     SysExit(0)
 
 signal.signal(signal.SIGINT, signal_handler)

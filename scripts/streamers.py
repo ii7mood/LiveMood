@@ -107,7 +107,7 @@ def _fetchAvatar(uploader_name: str, uploader_url: str) -> tuple[str, str]:
     with open(cachepath, "wb+") as f:
         f.write(image.content)
     
-    return (url, cachepath)
+    return (url, path.normpath(cachepath))
 
 
 
