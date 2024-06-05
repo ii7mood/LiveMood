@@ -1,5 +1,6 @@
 import sqlite3
 from os import path
+from sys import exit as SysExit
 
 db = sqlite3.connect('files/Streamers.db')
 cursor = db.cursor()
@@ -67,13 +68,29 @@ def search():
     query = cursor.fetchall()
     print(query)
 
+def reset(property : str) -> None:
+    cursor.execute(f"SELECT * FROM streamers")
+
+    if property == "activity":
+        raw_streamers_list = cursor.fetchall() # raw_streamers_list has 3 elements, [name, url, activity]
+        for streamer in raw_streamers_list:
+            print(streamer[0])
+            cursor.execute(f"UPDATE streamers SET RECORDED_ACTIVITY = ? WHERE URL = ?", ('not_live', streamer[1],))
+    
+    elif property == "database":
+        cursor.execute(f"DELETE FROM streamers;")
+    
+    db.commit()
+
 while True:
     print(f"""
 1 - Follow Streamer
 2 - Remove Streamer
 3 - List all Streamers
 4 - Search with certain criteria
-5 - Exit\n""")
+5 - Reset Streamers Activity
+6 - Delete all Streamers from Database
+7 - Exit\n""")
     
     opt = input("Select an option: ")
     match opt:
@@ -86,6 +103,11 @@ while True:
         case "4":
             search()
         case "5":
-            exit(0)
+            reset("activity")
+        case "6":
+            input("Are you sure? By pressing any key you will delete every record from the DB, otherwise close the window or CTRL+C: ")
+            reset("database")
+        case "7":
+            SysExit(0)
         case _:
             print("Please select an option by inputing a number between 1 and 5!\n")
