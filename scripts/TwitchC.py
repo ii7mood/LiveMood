@@ -3,6 +3,7 @@ from sys import exit as SysExit
 from common import logger, config, parent_path
 import json
 
+logger.name = __file__
 
 def oAuthreinit() -> None:
     logger.warning("Twitch Acess Token failed to authenticate. Requesting a new token..")
@@ -14,7 +15,7 @@ def oAuthreinit() -> None:
         oAuth['access_token'] = newAuthBearer['access_token']
     except KeyError:
         if newAuthBearer['status'] == 400:
-            print("Twitch oAuth details incorrectly entered.")
+            logger.warning("Twitch oAuth details incorrectly entered.")
             SysExit(1)
 
     with open(parent_path+'/files/config.json', 'w') as configfile:
