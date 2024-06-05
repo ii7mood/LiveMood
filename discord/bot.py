@@ -111,7 +111,7 @@ async def clean(interaction: discord.Interaction, number_of_characters : int) ->
 @tree.command(name='reset', description='Reset certain properties of all streamers')
 async def reset(interaction: discord.Interaction, property : str) -> None:
     cursor.execute(f"SELECT * FROM streamers")
-    raw_streamers_list = cursor.fetchall() # raw_streamers_list has 3 elements, [url, activity, name]
+    raw_streamers_list = cursor.fetchall() # raw_streamers_list has 3 elements, [name, url, activity]
 
     if property == "activity":
         for streamer in raw_streamers_list:
