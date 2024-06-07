@@ -81,7 +81,7 @@ def _fetchAvatar(uploader_name: str, uploader_url: str) -> tuple[str, str]:
     Attempts to cache both if a locally stored image does not exist.
     '''
 
-    cachepath = f'files/cache/{uploader_name.replace('/', '')}'  # TO-DO: Need to validate filename for Windows as well.
+    cachepath = f'files/cache/{uploader_name.replace("/", "")}'  # TO-DO: Need to validate filename for Windows as well.
     url = None
     image = None
 
