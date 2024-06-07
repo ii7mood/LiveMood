@@ -6,7 +6,7 @@ import discord
 import datetime
 from subprocess import Popen
 from os import getcwd
-from sys import path
+from sys import path, executable
 
 parent_path = getcwd().replace('/discord', '')
 path.append(parent_path)
@@ -27,7 +27,7 @@ CHANNEL_ID = config["listeners"]["discord"]["channel_id"]
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
-process = Popen([config["python_executable"], "discord/bot.py"])
+process = Popen([executable, "discord/bot.py"])
 
 
 def embed_notification(info_dict : dict) -> discord.Embed:
