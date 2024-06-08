@@ -29,13 +29,13 @@ def _fetchTwitchStream(uploader_name: str) -> dict:
     Uses Twitch API to request stream data then returns those two selected fields.
     """
     if config['twitch_opts']['scrape'] == "1":
-        return None  # Have not implemented a way to scrape stream data from Twitch
+        return {'viewer_count': 0, 'game_name': 'Unknown'}  # Have not implemented a way to scrape stream data from Twitch
     
     try:
         stream = TwitchC.getStream(uploader_name)
         return stream['data'][0]
     except Exception as e:
-        logger.warning(f"Failed to retrieve Twitch Stream data. \n{e}")
+        logger.warning(f"Failed to retrieve Twitch Stream data. \n{e}\n{stream}")
         return {'viewer_count': 0, 'game_name': 'Unknown'}
 
 
@@ -142,7 +142,7 @@ def _extractData(url: str, yt_dlp_args: dict) -> dict:
                 return 0
 
             else:
-                logger.error(f"Systematic Error: \n{str(e)}")
+                logger.warning(f"Systematic Error: \n{str(e)}")
                 return None
 
 
@@ -192,13 +192,13 @@ def getStreamerData(nickname: str, uploader_url: str, recorded_activity: str) ->
         data['uploader_url'] = uploader_url
         return data
     
-    #  At this point we know there is indeed a new stream
+    #  At this point we know that there is indeed a new stream
     logger.info(f"Stream Found. Status: {info_dict['live_status']}")
 
     #  Chained if-statements :)
     if info_dict['live_status'] == "is_upcoming":
         if info_dict['release_timestamp'] == None:
-            data['release_timestamp'] = "in_moments"  # YT stops giving a precise value when nearing a the time of a scheduled stream
+            data['release_timestamp'] = "in_moments"  # YT stops giving a precise value when nearing the time of a scheduled stream
         
         else:
             #  Streams scheduled to start in >24h will not be recorded
