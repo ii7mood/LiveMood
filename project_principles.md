@@ -105,3 +105,10 @@ All projects should be compatible across different Operating Systems, whether it
 
 ## Logs
 A script making use of a logger should be clearly named (e.g logger.name = \_\_file\_\_) and should not drown the log file with info. Instead long logs should be written with the DEBUG method and be enabled by the user.
+
+## Importing Modules
+Modules can be imported in two ways: Selective Importing, that is to import specific functions from a libarary, or Explicit Importing, that is importing the entire library. I think that if we're making use of two or three functions then Selective Importing should be used - provided that there we won't be over-writing any built-in functions i.e ```from sys import exit``` should not be used as it over-writes the built-in ```exit()``` function. You could use the ```as``` keyword but then you would rename it to ```sys_exit()``` which looks kind of ugly. In short:
+
+-> IF no. functions used <= 3 **AND** no conflicts occur with built-in functions THEN Selective Imports are to be used, otherwise Explicit Imports are preferred.
+
+```from xyz import *``` is highly discouraged unless it's small module that contains various functions and/or constants.
