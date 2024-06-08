@@ -212,7 +212,7 @@ def getStreamerData(nickname: str, uploader_url: str, recorded_activity: str) ->
     
     # platform-specific data
     if platform == "twitch":
-        tvData = _fetchTwitchStream(info_dict['uploader'])
+        tvData = _fetchTwitchStream(info_dict['display_id'])
         data['viewer_count'] = tvData['viewer_count']
         data['category_name'] = tvData['game_name']
     else:
@@ -227,7 +227,7 @@ def getStreamerData(nickname: str, uploader_url: str, recorded_activity: str) ->
     data['uploader_name'] = nickname
     data['uploader_url'] = uploader_url
     data['stream_url'] = url
-    data['avatar_url'], data['avatar_path'] = _fetchAvatar(info_dict['uploader'], data['uploader_url'])
+    data['avatar_url'], data['avatar_path'] = _fetchAvatar(info_dict['display_id'], data['uploader_url'])
 
     return data
 
