@@ -54,7 +54,7 @@ def getStream(name, _attempts = 0) -> dict:
 
     if stream_json.status_code == 401: # Twitch tokens expire after some time, in which case we can re-generate one.
         if _attempts >= 3:
-            logger.error("These Twitch Credentials cannot be used to authorise. Unstable behaviour incoming.")
+            logger.error("These Twitch Credentials cannot be used to authorise. Exiting..")
             SysExit(1)
         oAuthreinit()
         return getStream(name, _attempts+1)
