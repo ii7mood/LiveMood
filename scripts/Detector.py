@@ -1,5 +1,6 @@
 import socket
 import pickle
+import sys
 from streamers import *
 from time import sleep
 from common import logger, config, register_signal_handler
@@ -83,10 +84,20 @@ def processData(streamersData : list, servers : dict) -> bool:
         updateStreamerActivity(streamerData['uploader_url'], streamerData['live_status'])
 
 def main():
+    error_count = 0
     while True:
-        streamersData = getStreamersData()
-        processData(streamersData, servers)
-        logger.info("Sleeping for 5 minutes")
-        sleep(300)
+        try:
+            streamersData = getStreamersData()
+            processData(streamersData, servers)
+            logger.info("Sleeping for 5 minutes")
+            sleep(300)
+            error_count = 0
+
+        except Exception as e:
+            logger.error(f"Major Error occured during processing. Details: {str(e)}. Error Count: {error_count}")
+            if error_count >= 5:
+                logger.error("Detector.py failed multiple times in a row. Will Exit.")
+                sys.exit(1)
+            error_count += 1
 
 main()
