@@ -6,7 +6,7 @@ import json
 logger.name = __file__
 
 def oAuthreinit() -> None:
-    logger.warning("Twitch Acess Token failed to authenticate. Requesting a new token..")
+    logger.warning("Twitch Access Token failed to authenticate. Requesting a new token..")
 
     oAuth = config["twitch_opts"]
     newAuthBearer = requests.post(f"https://id.twitch.tv/oauth2/token?client_id={oAuth['client_id']}&client_secret={oAuth['client_secret']}&grant_type=client_credentials").json();
@@ -22,7 +22,7 @@ def oAuthreinit() -> None:
         json.dump(config, configfile, indent=2)
 
 
-def getProfile(name) -> dict:
+def getProfile(name, _attempts = 0) -> dict:
     oAuth = config["twitch_opts"]
 
     headers = {
@@ -33,14 +33,17 @@ def getProfile(name) -> dict:
     profile_json = requests.get(f'https://api.twitch.tv/helix/users?login={name}', headers=headers)
 
     if profile_json.status_code == 401: # Twitch tokens expire after some time, in which case we can re-generate one.
+        if _attempts >= 3:
+            logger.error("These Twitch Credentials cannot be used to authorise. Exiting..")
+            SysExit(1)
         oAuthreinit()
-        return getProfile(name)
+        return getProfile(name, _attempts+1)
 
     profile = profile_json.json();
     return profile
 
 
-def getStream(name) -> dict:
+def getStream(name, _attempts = 0) -> dict:
     oAuth = config["twitch_opts"]
 
     headers = {
@@ -50,8 +53,11 @@ def getStream(name) -> dict:
     stream_json = requests.get(f'https://api.twitch.tv/helix/streams?user_login={name}', headers=headers)
 
     if stream_json.status_code == 401: # Twitch tokens expire after some time, in which case we can re-generate one.
+        if _attempts >= 3:
+            logger.error("These Twitch Credentials cannot be used to authorise. Unstable behaviour incoming.")
+            SysExit(1)
         oAuthreinit()
-        return getStream(name)
+        return getStream(name, _attempts+1)
 
     stream = stream_json.json();
     return stream 
