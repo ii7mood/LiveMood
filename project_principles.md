@@ -32,6 +32,7 @@ Examples:
 There is no particular reasoning behind any of these choices, I just think they look nice :p If there is anything that could be improved please do state the reason (if any). The list is ordered from lowest to highest priority, i.e a function argument that is also a class should be written in snake_case.
 
 - **Variables, Functions**: camelCase
+- **Procedures**: snake_case/UPPER_SNAKE_CASE
 - **Private Functions**: snake_case
 - **Classes**: PascalCase
 - **Constants**: UPPER_SNAKE_CASE
@@ -45,7 +46,7 @@ There is no particular reasoning behind any of these choices, I just think they 
 
 ## Definitions
 
-* Functions should include type hinting and if it has special return types then write a comment under the function explaining them. Example:
+* Functions should include type hinting (if possible) and if it has special return types then write a comment under the function explaining them. Example:
 	```
 	def _extractData(url: str, yt_dlp_args: dict) -> dict:
 		"""
@@ -79,20 +80,20 @@ There is no particular reasoning behind any of these choices, I just think they 
 
 
 * Class definitions should list out its attributes and methods as such:
-```
-	class MyClass:
-	    """
-	    This class represents an example.
-	
-	    Attributes:
-	        attr1: Description of attr1.
-	        attr2: Description of attr2.
-	
-	    Methods:
-	        method1: Description of method1.
-	        method2: Description of method2.
-	    """
-```
+	```
+		class MyClass:
+			"""
+			This class represents an example.
+		
+			Attributes:
+				attr1: Description of attr1.
+				attr2: Description of attr2.
+		
+			Methods:
+				method1: Description of method1.
+				method2: Description of method2.
+			"""
+	```
 
 ## Error-handling
 // Have not yet bothered to implement it. Should probably do so. When tackled I will update this section with the necessary information as I need to research and actually try it before setting anything concrete.
