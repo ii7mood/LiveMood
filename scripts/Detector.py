@@ -73,7 +73,7 @@ def process_data(STREAMERS_DATA : list, SERVERS : dict) -> bool:
             updateStreamerActivity(streamerData['uploader_url'], streamerData['live_status'])
             continue
 
-        if not sendData(streamerData, SERVERS): 
+        if not send_data(streamerData, SERVERS): 
             #  if an error occured with *any* listener then the table will not update the streamers' status, will attempt re-send next iteration.
             continue
         

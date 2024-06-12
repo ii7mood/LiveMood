@@ -4,7 +4,7 @@ import sqlite3
 import TwitchC
 import datetime
 import sys
-from os import path
+import os
 from time import sleep
 from bs4 import BeautifulSoup
 from common import logger, config, parent_path
@@ -15,15 +15,15 @@ logger.name = __file__
 
 # TO-DO: Test if Twitch scraper still works
 
-db = sqlite3.connect('files/Streamers.db') # establish a connection to Streamers.db holding various data about each streamer
-cursor = db.cursor()
+DB = sqlite3.connect('files/Streamers.db') # establish a connection to Streamers.db holding various data about each streamer
+CURSOR = DB.cursor()
 
-if path.getsize('files/Streamers.db') == 0: # assume file was just created
-    cursor.execute(createTable)
-    db.commit()
+if os.path.getsize('files/Streamers.db') == 0: # assume file was just created
+    CURSOR.execute(createTable)
+    DB.commit()
 
 
-def _fetchTwitchStream(uploader_name: str) -> dict:
+def _fetch_twitch_stream(uploader_name: str) -> dict:
     """
     Returns a dict containing 'viewer_count' and 'game_name' keys.
     Uses Twitch API to request stream data then returns those two selected fields.
@@ -39,7 +39,7 @@ def _fetchTwitchStream(uploader_name: str) -> dict:
         return {'viewer_count': 0, 'game_name': 'Unknown'}
 
 
-def _fetchTwitchProfile(uploader_name: str) -> dict:
+def _fetch_twitch_profile(uploader_name: str) -> dict:
     """
     Returns a string which holds the URL to the avatar of the streamer.
     Uses Twitch API to request profile data then return avatar_url as a specific value.
@@ -75,7 +75,7 @@ def _fetchTwitchProfile(uploader_name: str) -> dict:
     return TwitchC.getProfile(uploader_name)['data'][0]['profile_image_url']
 
 
-def _fetchAvatar(uploader_name: str, uploader_url: str) -> tuple[str, str]:
+def _fetch_avatar(uploader_name: str, uploader_url: str) -> tuple[str, str]:
     '''
     Returns a tuple holding the URL and path to the avatar.
     Attempts to cache both if a locally stored image does not exist.
@@ -102,7 +102,7 @@ def _fetchAvatar(uploader_name: str, uploader_url: str) -> tuple[str, str]:
             return (default_youtube_icon_url, default_youtube_icon_path)
         
     elif "twitch" in uploader_url:
-        url = _fetchTwitchProfile(uploader_name)  # name is misleading as it only returns avatar URL, it might do more in the future tho
+        url = _fetch_twitch_profile(uploader_name)  # name is misleading as it only returns avatar URL, it might do more in the future tho
         if url == default_twitch_icon_url:
             return (default_twitch_icon_url, default_twitch_icon_path)
         image = requests.get(url)
@@ -110,13 +110,13 @@ def _fetchAvatar(uploader_name: str, uploader_url: str) -> tuple[str, str]:
     with open(cachepath, "wb+") as f:
         f.write(image.content)
     
-    return (url, path.normpath(cachepath))
+    return (url, os.path.normpath(cachepath))
 
 
 
 # Random errors refer to connection errors or anything that would be solved with a simple function re-call.
 # Systematic errors are more complex and require some specific workaround.
-def _extractData(url: str, yt_dlp_args: dict) -> dict:
+def _extract_data(url: str, yt_dlp_args: dict) -> dict:
     """
     Returns the dictionary returned by yt_dlp on a successful call.
     return types:
@@ -168,14 +168,14 @@ def getStreamerData(nickname: str, uploader_url: str, recorded_activity: str) ->
     if config['path_to_cookies']:
         yt_dlp_args['cookies'] = config['path_to_cookies']
     
-    info_dict = _extractData(url, yt_dlp_args)
+    info_dict = _extract_data(url, yt_dlp_args)
     match info_dict:
         case None:
             pass  # All systematic errors will be treated as a result of a channel not being live
             # If that assesment is wrong it will be logged as such and should be dealt with especially.
         case 0:
             sleep(15)  # This is necessary for some random errors, sleep value does vary though.
-            info_dict = _extractData(url, yt_dlp_args)
+            info_dict = _extract_data(url, yt_dlp_args)
         
     # At minimum the data dictionary should include: the uploader URL, current status, recorded status, and nickname.
     if info_dict is None:
@@ -212,7 +212,7 @@ def getStreamerData(nickname: str, uploader_url: str, recorded_activity: str) ->
     
     # platform-specific data
     if platform == "twitch":
-        tvData = _fetchTwitchStream(info_dict['display_id'])
+        tvData = _fetch_twitch_stream(info_dict['display_id'])
         data['viewer_count'] = tvData['viewer_count']
         data['category_name'] = tvData['game_name']
     else:
@@ -227,7 +227,7 @@ def getStreamerData(nickname: str, uploader_url: str, recorded_activity: str) ->
     data['uploader_name'] = nickname
     data['uploader_url'] = uploader_url
     data['stream_url'] = url
-    data['avatar_url'], data['avatar_path'] = _fetchAvatar(info_dict['display_id'], data['uploader_url'])
+    data['avatar_url'], data['avatar_path'] = _fetch_avatar(info_dict['display_id'], data['uploader_url'])
 
     return data
 
@@ -236,16 +236,16 @@ def updateStreamerActivity(url: str, activity: str) -> None:
     """
     Update the recorded_activity field of a streamer, using their URL as the identifier.
     """
-    cursor.execute("UPDATE streamers SET RECORDED_ACTIVITY = ? WHERE URL = ?", (activity, url))
-    db.commit()
+    CURSOR.execute("UPDATE streamers SET RECORDED_ACTIVITY = ? WHERE URL = ?", (activity, url))
+    DB.commit()
 
 
 def getStreamersData() -> list[dict]:
     """
     Returns a list of dictionaries holding data of their corresponding streamers.
     """
-    cursor.execute("SELECT * FROM streamers")
-    rawStreamersData: list[list[str, str, str]] = cursor.fetchall()
+    CURSOR.execute("SELECT * FROM streamers")
+    rawStreamersData: list[list[str, str, str]] = CURSOR.fetchall()
 
     data = []
     for rawStreamerData in rawStreamersData:
