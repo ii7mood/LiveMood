@@ -2,15 +2,15 @@ import yt_dlp
 import requests
 import sqlite3
 import TwitchC
+import datetime
+import sys
 from os import path
-from sys import path as Path
 from time import sleep
 from bs4 import BeautifulSoup
-import datetime
 from common import logger, config, parent_path
 from streamers_vars import avatars, yt_dlp_args, createTable, default_twitch_icon_path, default_twitch_icon_url, default_youtube_icon_path, default_youtube_icon_url
 
-Path.append(parent_path)
+sys.path.append(parent_path)
 logger.name = __file__
 
 # TO-DO: Test if Twitch scraper still works

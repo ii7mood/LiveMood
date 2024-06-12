@@ -1,5 +1,5 @@
 import requests
-from sys import exit as SysExit
+import sys
 from common import logger, config, parent_path
 import json
 
@@ -16,7 +16,7 @@ def oAuthreinit() -> None:
     except KeyError:
         if newAuthBearer['status'] == 400:
             logger.warning("Twitch oAuth details incorrectly entered.")
-            SysExit(1)
+            sys.exit(1)
 
     with open(parent_path+'/files/config.json', 'w') as configfile:
         json.dump(config, configfile, indent=2)
@@ -35,7 +35,7 @@ def getProfile(name, _attempts = 0) -> dict:
     if profile_json.status_code == 401: # Twitch tokens expire after some time, in which case we can re-generate one.
         if _attempts >= 3:
             logger.error("These Twitch Credentials cannot be used to authorise. Exiting..")
-            SysExit(1)
+            sys.exit(1)
         oAuthreinit()
         return getProfile(name, _attempts+1)
 
@@ -55,7 +55,7 @@ def getStream(name, _attempts = 0) -> dict:
     if stream_json.status_code == 401: # Twitch tokens expire after some time, in which case we can re-generate one.
         if _attempts >= 3:
             logger.error("These Twitch Credentials cannot be used to authorise. Exiting..")
-            SysExit(1)
+            sys.exit(1)
         oAuthreinit()
         return getStream(name, _attempts+1)
 

@@ -1,14 +1,14 @@
 import subprocess
 import signal
-from os import name as os_name
+import sys
+import os
 from time import sleep
 from scripts.common import logger, config
-from sys import exit as SysExit
 
 logger.name = __file__
-if os_name == "nt":
+if os.name == "nt":
     VENV_PYTHON_PATH = "venv\\Scripts\\python.exe"
-elif os_name == "posix":
+elif os.name == "posix":
     VENV_PYTHON_PATH = "venv/bin/python"
 else:
     VENV_PYTHON_PATH = "venv/bin/python"
@@ -31,7 +31,7 @@ def signal_handler(sig, frame):
     for process in processes:
         process.terminate()
     sleep(2)  # give time for other scripts to do their thing before exiting (avoids race condition.. i think) 
-    SysExit(0)
+    sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)

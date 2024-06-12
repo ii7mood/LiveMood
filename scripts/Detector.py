@@ -1,15 +1,20 @@
 import socket
 import pickle
 import sys
-from streamers import *
 from time import sleep
 from common import logger, config, register_signal_handler
+from streamers import *
 
-listeners = config["listeners"]
+LISTENERS = config["listeners"]
 logger.name = __file__
 
 
-def establish_connection(listener : dict, identity: str):
+def connect(listener : dict, identity: str) -> tuple:
+    """
+    Returns:
+        on success: tuple(socket.AF_INET, socket.SOCK_STREAM)
+        on failure: None
+    """
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         server.connect((listener["host"], listener["port"]))
@@ -25,18 +30,9 @@ def establish_connection(listener : dict, identity: str):
         logger.warning("Incorrect type specified. Is the port an integer?")
 
 
-servers = {}
-for identity, listener in listeners.items():
-    if not listener["enable"]:
-        continue
-
-    server = establish_connection(listener, identity)
-    if server: #  In case we get a None return
-        servers[identity] = server
-
-def broadcast_data(data : dict, servers: dict) -> bool:
+def send_data(data : dict, servers: dict) -> bool:
     successful = True
-    for server in servers.items():
+    for server in SERVERS.items():
         name = server[0]
         connection = server[1]
 
@@ -61,8 +57,8 @@ def broadcast_data(data : dict, servers: dict) -> bool:
     return successful
         
 
-def processData(streamersData : list, servers : dict) -> bool:
-    for streamerData in streamersData:
+def process_data(STREAMERS_DATA : list, SERVERS : dict) -> bool:
+    for streamerData in STREAMERS_DATA:
         change_in_activity = streamerData["live_status"] != streamerData["recorded_live_status"]
 
         if not change_in_activity:
@@ -77,27 +73,38 @@ def processData(streamersData : list, servers : dict) -> bool:
             updateStreamerActivity(streamerData['uploader_url'], streamerData['live_status'])
             continue
 
-        if not broadcast_data(streamerData, servers): 
+        if not sendData(streamerData, SERVERS): 
             #  if an error occured with *any* listener then the table will not update the streamers' status, will attempt re-send next iteration.
             continue
         
         updateStreamerActivity(streamerData['uploader_url'], streamerData['live_status'])
 
+
+SERVERS = {}
+for identity, listener in LISTENERS.items():
+    if not listener["enable"]:
+        continue
+
+    server = connect(listener, identity)
+    if server: #  In case we get a None return
+        SERVERS[identity] = server
+
+
 def main():
-    error_count = 0
+    ERRORS = 0
     while True:
         try:
             streamersData = getStreamersData()
-            processData(streamersData, servers)
+            process_data(streamersData, SERVERS)
             logger.info("Sleeping for 5 minutes")
             sleep(300)
-            error_count = 0
+            ERRORS = 0
 
         except Exception as e:
-            logger.error(f"Major Error occured during processing. Details: {str(e)}. Error Count: {error_count}")
-            if error_count >= 5:
+            logger.error(f"Major Error occured during processing. Details: {str(e)}. Error Count: {ERRORS}")
+            if ERRORS >= 5:
                 logger.error("Detector.py failed multiple times in a row. Will Exit.")
                 sys.exit(1)
-            error_count += 1
+            ERRORS += 1
 
 main()

@@ -6,28 +6,28 @@ from datetime import datetime
 from functools import partial
 
 
-def signal_handler(signum, frame, sockets):
+def signal_handler(signum: signal.SIGINT, frame, sockets: dict) -> None:
     for identity, sock in sockets.items():
         sock.close()
         logger.warning(f"{identity} sock closed.")
 
-def register_signal_handler(sock, identity):
-    global count
-    global sockets
+def register_signal_handler(sock, identity : str) -> None:
+    global COUNT
+    global SOCKETS
     
     logger.info(f'Registered sock: {sock.getsockname()} || {identity}')
-    sockets[f'{identity}-{count}'] = sock
-    count += 1  # Detecter will open multiple sockets, having a unique identifier here is crucial
+    SOCKETS[f'{identity}-{COUNT}'] = sock
+    COUNT += 1  # Detecter will open multiple sockets, having a unique identifier here is crucial
 
-sockets = {}
-count = 0
+SOCKETS = {}
+COUNT = 0
 
 
-handler_with_args = partial(signal_handler, sockets=sockets)
+handler_with_args = partial(signal_handler, sockets=SOCKETS)
 signal.signal(signal.SIGTERM, handler_with_args)
 
 
-def initialize_logger_and_config():
+def initialize_logger_and_config() -> None:
     global logger, config
     
     if logger is None:
