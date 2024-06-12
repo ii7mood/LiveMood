@@ -1,5 +1,7 @@
 # LiveMood
 
+![Example images of some listeners](https://picoshare.ii7mood.com/-xzQp74nsBx)
+
 I first wrote LiveMood (under a different name) to be used as an alternative to YouTube & Twitch's official notification system as it was filled with flaws and would often not work. It used to be made to work exclusively with Discord but even that sucks now, so having the option to just quickly write up a module for any platform was added.
 
 Now I continue updating this program simply because of how much nicer it is to have a detailed overview of each stream right from the notification (also gain experience :D). This will continue being updated so long as I use it.
