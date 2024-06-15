@@ -202,7 +202,7 @@ def getStreamerData(nickname: str, uploader_url: str, recorded_activity: str) ->
         
         else:
             #  Streams scheduled to start in >24h will not be recorded
-            hours_until_stream = info_dict['release_timestamp'] - datetime.datetime.now().timestamp() / 3600
+            hours_until_stream = (info_dict['release_timestamp'] - datetime.datetime.now().timestamp()) / 3600
             if hours_until_stream > 24:
                 data['uploader_name'] = nickname
                 data['live_status'] = 'not_live'
