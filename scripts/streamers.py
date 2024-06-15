@@ -209,6 +209,8 @@ def getStreamerData(nickname: str, uploader_url: str, recorded_activity: str) ->
                 data['recorded_live_status'] = recorded_activity
                 data['uploader_url'] = uploader_url
                 return data
+            data['release_timestamp'] = info_dict['release_timestamp']
+            
     
     # platform-specific data
     if platform == "twitch":
@@ -219,7 +221,6 @@ def getStreamerData(nickname: str, uploader_url: str, recorded_activity: str) ->
         data['viewer_count'] = info_dict['concurrent_view_count']
 
     data['live_status'] = info_dict['live_status']
-    data['release_timestamp'] = info_dict['release_timestamp']
     data['uploader'] = info_dict['uploader']
     data['thumbnail'] = info_dict['thumbnail']
     data['fulltitle'] = info_dict['fulltitle']
