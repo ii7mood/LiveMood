@@ -219,6 +219,7 @@ def getStreamerData(nickname: str, uploader_url: str, recorded_activity: str) ->
         data['viewer_count'] = info_dict['concurrent_view_count']
 
     data['live_status'] = info_dict['live_status']
+    data['release_timestamp'] = info_dict['release_timestamp']
     data['uploader'] = info_dict['uploader']
     data['thumbnail'] = info_dict['thumbnail']
     data['fulltitle'] = info_dict['fulltitle']
