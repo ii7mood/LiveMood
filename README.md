@@ -10,7 +10,7 @@ Now I continue updating this program simply because of how much nicer it is to h
     * [Updates](#Installation##Updates)
 * [Configuration](#Configuration)
 * [Writing Listeners](#Listeners)
-* [Road Map](#Roadmap)
+* [Road Map](https://github.com/ii7mood/LiveMood/issues/4)
 
 # Installation
 Simply clone this repository and run setup.py then follow its instructions. From there you can delete the setup.py script (or keep it :shrug:) and run main.py:
