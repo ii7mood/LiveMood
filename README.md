@@ -23,7 +23,7 @@ python main.py
 ```
 
 ## Updates
-I still am not really sure how to handle updating this program. I think you can use `git pull origin` or download the latest released and simply overwrite everything. If there are any additional steps necessary I will make sure to note them down. It's recommended to make a back-up before updating, just in case. I will eventually look into an easy way to update this without hassle.
+I still am not really sure how to handle updating this program. I think you can use `git pull origin` or download the latest release and simply overwrite everything. If there are any additional steps necessary I will make sure to note them down. It's recommended to make a back-up before updating, just in case. I will eventually look into an easy way to update this without hassle.
 
 # Configuration
 You can configure the program through the `livemood/files/config.js` file. Each module will have its own set of options under `listeners`. Other options include `path_to_cookies` which expects an absolute path. Lastly, you can add your Twitch application details under the `twitch_opts` key.
