@@ -69,7 +69,7 @@ def _fetch_twitch_profile(uploader_name: str) -> dict:
                     logger.info("soup.find returned None, Twitch.TV probably changed website structure. Using default Twitch icon.")
                     return default_twitch_icon_url
         else:
-            logger.warning("Could not retrieve Twitch HTML structure. Fallbacking to default avatar.")
+            logger.warning("Could not parse Twitch HTML structure. Fallbacking to default avatar.")
             return default_twitch_icon_url
 
     return TwitchC.getProfile(uploader_name)['data'][0]['profile_image_url']
