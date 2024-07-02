@@ -8,7 +8,6 @@ from streamers import *
 LISTENERS = config["listeners"]
 logger.name = __file__
 
-
 def connect(listener : dict, identity: str) -> tuple:
     """
     Returns:
@@ -67,7 +66,7 @@ def process_data(STREAMERS_DATA : list, SERVERS : dict) -> bool:
         logger.info(f'Change in activity with {streamerData["uploader_name"]} | ' 
                     f'Before: {streamerData["recorded_live_status"]} | '
                     f'After: {streamerData["live_status"]} | ')
-        sleep(1) # Sometimes Detector.py sends data before listener can process it. So wait a sec.
+        sleep(1) # Sometimes Detector.py sends data before the Listener is ready to process it.
 
         if streamerData["live_status"] == "not_live":
             updateStreamerActivity(streamerData['uploader_url'], streamerData['live_status'])
@@ -101,7 +100,7 @@ def main():
             ERRORS = 0
 
         except Exception as e:
-            logger.error(f"Major Error occured during processing. Details: {str(e)}. Error Count: {ERRORS}")
+            logger.error(f"Major Error occured during processing. {str(e)}. Error Count: {ERRORS}")
             if ERRORS >= 5:
                 logger.error("Detector.py failed multiple times in a row. Will Exit.")
                 sys.exit(1)
