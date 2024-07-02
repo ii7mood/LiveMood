@@ -118,11 +118,10 @@ def _fetch_avatar(uploader_name: str, uploader_url: str) -> tuple[str, str]:
 # Systematic errors are more complex and require some specific workaround.
 def _extract_data(url: str, yt_dlp_args: dict) -> dict:
     """
-    Returns the dictionary returned by yt_dlp on a successful call.
+    Returns the dictionary returned by yt_dlp on a successful call, on random errors it'll recursively call until it succeeds
     return types:
         on success: dict
         on systematic errors: None
-        on random errors: 0
     """
     with yt_dlp.YoutubeDL(yt_dlp_args) as ytdlp:
         try:
@@ -134,12 +133,19 @@ def _extract_data(url: str, yt_dlp_args: dict) -> dict:
                 return None
             
             elif "tab page" in str(e):
-                logger.warning(f"Random Error: \n{str(e)}")
-                return 0
+                logger.warning(f"Random Error: YT_FAILED_LOADING\n{str(e)}")
+                sleep(15)
+                return _extract_data(url, yt_dlp_args)
+
+            elif "failure in name resolution" in str(e):
+                logger.warning(f"Random Error: No Internet Connection. Attempting Extraction in 5 mins\n{str(e)}")
+                sleep(300)
+                return _extract_data(url, yt_dlp_args)
             
             elif "JSON metadata" in str(e):
-                logger.warning(f"Random Error: \n{str(e)}")
-                return 0
+                logger.warning(f"Random Error: Failed to download JSON metadata\n{str(e)}")
+                sleep(15)
+                return _extract_data(url, yt_dlp_args)
 
             else:
                 logger.warning(f"Systematic Error: \n{str(e)}")
@@ -169,13 +175,6 @@ def getStreamerData(nickname: str, uploader_url: str, recorded_activity: str) ->
         yt_dlp_args['cookies'] = config['path_to_cookies']
     
     info_dict = _extract_data(url, yt_dlp_args)
-    match info_dict:
-        case None:
-            pass  # All systematic errors will be treated as a result of a channel not being live
-            # If that assesment is wrong it will be logged as such and should be dealt with especially.
-        case 0:
-            sleep(15)  # This is necessary for some random errors, sleep value does vary though.
-            info_dict = _extract_data(url, yt_dlp_args)
         
     # At minimum the data dictionary should include: the uploader URL, current status, recorded status, and nickname.
     if info_dict is None:
@@ -185,7 +184,7 @@ def getStreamerData(nickname: str, uploader_url: str, recorded_activity: str) ->
         data['uploader_url'] = uploader_url
         return data
         
-    if info_dict['live_status'] == recorded_activity:
+    if info_dict['live_status'] == recorded_activity:  # Avoid processing already-known streams
         data['uploader_name'] = nickname
         data['live_status'] = recorded_activity
         data['recorded_live_status'] = recorded_activity
@@ -195,7 +194,7 @@ def getStreamerData(nickname: str, uploader_url: str, recorded_activity: str) ->
     #  At this point we know that there is indeed a new stream
     logger.info(f"Stream Found. Status: {info_dict['live_status']}")
 
-    #  Chained if-statements :)
+    #  Nested if-statements :)
     if info_dict['live_status'] == "is_upcoming":
         if info_dict['release_timestamp'] == None:
             data['release_timestamp'] = "in_moments"  # YT stops giving a precise value when nearing the time of a scheduled stream
@@ -248,10 +247,11 @@ def getStreamersData() -> list[dict]:
     """
     CURSOR.execute("SELECT * FROM streamers")
     rawStreamersData: list[list[str, str, str]] = CURSOR.fetchall()
+    # rawStreamersData = TEST_CASES # uncomment to make use of test cases
 
     data = []
     for rawStreamerData in rawStreamersData:
-        data.append(getStreamerData(rawStreamerData[0], rawStreamerData[1], rawStreamerData[2]))
+        data.append(getStreamerData(rawStreamerData[0], rawStreamerData[1], rawStreamerData[2]))  # nickname, url, recorded_activity
         sleep(1)
     
     return data
