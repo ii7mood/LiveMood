@@ -13,6 +13,14 @@ from streamers_vars import avatars, yt_dlp_args, createTable, default_twitch_ico
 sys.path.append(parent_path)
 logger.name = __file__
 
+TEST_CASES = [
+    ['lofigirl', 'https://www.youtube.com/@LofiGirl', 'not_live'],
+    ['hamood', 'https://www.youtube.com/@hamood1884', 'not_live'],
+    ['NevaGonnaGiveYouUp', 'https://www.youtube.com/channel/UCE9JOW3cOtAh_tvQixnTfZQ', 'not_live'],
+    ['LeekBeats', 'https://www.twitch.tv/leekbeats', 'not_live'],
+    ['siso_2', 'https://www.twitch.tv/siso_2', 'not_live']
+]
+
 # TO-DO: Test if Twitch scraper still works
 
 DB = sqlite3.connect('files/Streamers.db') # establish a connection to Streamers.db holding various data about each streamer
